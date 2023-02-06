@@ -1,0 +1,47 @@
+name: Shortener CI
+on: push
+
+jobs:
+  ci:
+    name: Elixir Build and Test
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:15
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      POSTGRES_HOST: localhost
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1
+        with:
+          version-file: .tool-versions
+          version-type: strict
+
+      - name: Restore dependencies cache
+        id: shortener-mix-cache
+        uses: actions/cache@v3
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
+      - name: Install dependencies
+        if: steps.shortener-mix-cache.outputs.cache-hit != 'true'
+        run: |
+          mix local.rebar --force && mix local.hex --force
+          mix deps.get
+
+      - name: Check if the code is formatted
+        run: mix format --check-formatted
+
+      - name: Run tests
+        run: mix test
