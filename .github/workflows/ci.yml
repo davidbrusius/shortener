@@ -40,6 +40,9 @@ jobs:
           mix local.rebar --force && mix local.hex --force
           mix deps.get
 
+      - name: Ensure no compile warnings
+        run: mix compile --warnings-as-errors
+
       - name: Check if the code is formatted
         run: mix format --check-formatted
 

@@ -20,13 +20,14 @@ defmodule Shortener.ShortenedURLs.ShortenedURL do
   schema "shortened_urls" do
     field :slug, :string, autogenerate: {SlugGenerator, :generate, [@slug_size]}
     field :url, :string
+    field :page_views, :integer
 
     timestamps()
   end
 
   def changeset(shortened_url, attrs \\ %{}) do
     shortened_url
-    |> cast(attrs, [:url])
+    |> cast(attrs, [:url, :page_views])
     |> validate_required([:url])
     |> validate_url()
     |> unique_constraint(:slug)
