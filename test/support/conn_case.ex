@@ -23,6 +23,8 @@ defmodule ShortenerWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import ShortenerWeb.ConnCase
+      import Shortener.Fixtures
+      import Shortener.SlugGeneratorHelper
 
       alias ShortenerWeb.Router.Helpers, as: Routes
 
@@ -33,6 +35,7 @@ defmodule ShortenerWeb.ConnCase do
 
   setup tags do
     Shortener.DataCase.setup_sandbox(tags)
+    if tags[:slug_stub], do: Shortener.SlugGeneratorHelper.stub_slug_generation!(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

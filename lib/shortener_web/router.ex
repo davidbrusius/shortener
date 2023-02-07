@@ -12,5 +12,8 @@ defmodule ShortenerWeb.Router do
 
   scope "/", ShortenerWeb do
     pipe_through :browser
+
+    resources "/", URLShortenerController, only: [:index, :create, :show], param: "slug"
+    resources "/shortened", ShortenedController, only: [:show], param: "slug"
   end
 end

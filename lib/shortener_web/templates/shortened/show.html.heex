@@ -1,0 +1,20 @@
+<div class="columns">
+  <div class="column left">
+    <%= render ShortenerWeb.LayoutView, "_shortz.html" %>
+  </div>
+  <div class="column right is-flex is-flex-direction-column is-justify-content-center">
+    <div class="message is-primary">
+      <div class="message-header">
+        <p>Successfully shortened URL</p>
+      </div>
+      <div class="message-body is-flex is-justify-content-space-between is-align-items-center">
+        <% url = Routes.url_shortener_url(@conn, :show, @shortened_url.slug) %>
+        <p>
+          Your Shortened URL is: <%= link url, to: url, class: "shortened-url" %>
+        </p>
+        <%= content_tag :button, "Copy", class: "js-clipboard-copy button", data: [clipboard_text: url] %>
+      </div>
+    </div>
+    <%= link "Shorten another one!", to: Routes.url_shortener_path(@conn, :index), class: "button is-light is-align-self-flex-start" %>
+  </div>
+</div>
