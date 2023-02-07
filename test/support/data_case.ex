@@ -24,11 +24,13 @@ defmodule Shortener.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Shortener.DataCase
+      import Shortener.Fixtures
     end
   end
 
   setup tags do
     Shortener.DataCase.setup_sandbox(tags)
+    if tags[:slug_stub], do: Shortener.SlugGeneratorHelper.stub_slug_generation!(tags)
     :ok
   end
 

@@ -1,0 +1,18 @@
+<div class="columns">
+  <div class="column left">
+    <%= render ShortenerWeb.LayoutView, "_shortz.html" %>
+  </div>
+  <div class="column right is-flex is-flex-direction-column is-justify-content-center">
+    <%= form_for @changeset, Routes.url_shortener_path(@conn, :create), [class: "url-shortener"], fn f -> %>
+      <div class="field">
+        <div class="control">
+          <% input_class = if f.errors != [], do: "is-danger" %>
+          <%= text_input f, :url, placeholder: "⚡️ Shorten your url", class: "input is-medium #{input_class}" %>
+          <%= error_tag f, :url, "URL" %>
+        </div>
+      </div>
+
+      <%= submit "Shorten", class: "button is-block is-primary is-fullwidth is-medium" %>
+    <% end %>
+  </div>
+</div>

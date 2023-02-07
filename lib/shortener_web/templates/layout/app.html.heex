@@ -1,5 +1,13 @@
 <main class="container">
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-  <%= @inner_content %>
+  <%= if error = get_flash(@conn, :error) do %>
+    <p class="notification is-warning is-light">
+      <%= error %>
+    </p>
+  <% end %>
+
+  <div class="columns is-desktop">
+    <div class="column is-12 two-columns-container">
+      <%= @inner_content %>
+    </div>
+  </div>
 </main>
