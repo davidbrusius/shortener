@@ -12,13 +12,13 @@ defmodule Shortener.ShortenedURLsTest do
   end
 
   describe "create/1" do
-    @tag slug_stub: "TESTSLUGab"
+    @tag slug_stub: "TESTSLUG"
     test "creates a shortened url for the given url" do
       url = "https://www.test.com?param1=value"
 
       {:ok, shortened_url} = ShortenedURLs.create(url)
 
-      assert %ShortenedURL{slug: "TESTSLUGab", url: ^url} = shortened_url
+      assert %ShortenedURL{slug: "TESTSLUG", url: ^url} = shortened_url
     end
 
     test "returns an error for invalid urls" do
@@ -48,18 +48,48 @@ defmodule Shortener.ShortenedURLsTest do
   end
 
   describe "find/1" do
-    @tag slug_stub: "TESTSLUGab"
+    @tag slug_stub: "TESTSLUG"
     test "returns the shortened url" do
       url = "https://www.test.com"
       fixture(:shortened_url, %{url: "https://www.test.com"})
 
-      {:ok, shortened_url} = ShortenedURLs.find("TESTSLUGab")
+      {:ok, shortened_url} = ShortenedURLs.find("TESTSLUG")
 
-      assert %ShortenedURL{slug: "TESTSLUGab", url: ^url} = shortened_url
+      assert %ShortenedURL{slug: "TESTSLUG", url: ^url} = shortened_url
     end
 
     test "returns an error when shortened url is not found" do
       assert {:error, :not_found} == ShortenedURLs.find("not-found")
+    end
+  end
+
+  describe "track_page_view/1" do
+    test "calls the StartServer GenServer to track the page view" do
+      assert :ok == ShortenedURLs.track_page_view("TESTSLUG")
+    end
+  end
+
+  describe "persist_page_views/1" do
+    @tag slug_stub: "TESTSLUG"
+    test "persists page views for each slug" do
+      shortened_url = fixture(:shortened_url)
+
+      page_views_by_slug = %{"TESTSLUG" => 10}
+      ShortenedURLs.persist_page_views(page_views_by_slug)
+
+      shortened_url = Repo.reload(shortened_url)
+      assert 10 == shortened_url.page_views
+    end
+
+    @tag slug_stub: "TESTSLUG"
+    test "increments current page views values" do
+      shortened_url = fixture(:shortened_url, %{page_views: 50})
+
+      page_views_by_slug = %{"TESTSLUG" => 25}
+      ShortenedURLs.persist_page_views(page_views_by_slug)
+
+      shortened_url = Repo.reload(shortened_url)
+      assert 75 == shortened_url.page_views
     end
   end
 end

@@ -22,6 +22,7 @@ defmodule ShortenerWeb.URLShortenerController do
   def show(conn, %{"slug" => slug}) do
     case ShortenedURLs.find(slug) do
       {:ok, shortened_url} ->
+        ShortenedURLs.track_page_view(shortened_url.slug)
         redirect(conn, external: shortened_url.url)
 
       {:error, :not_found} ->
