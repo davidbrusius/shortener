@@ -1,5 +1,8 @@
 name: Shortener CD
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   cd:
