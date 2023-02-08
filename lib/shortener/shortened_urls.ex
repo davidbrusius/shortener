@@ -7,8 +7,6 @@ defmodule Shortener.ShortenedURLs do
   alias Shortener.Repo
   alias Shortener.ShortenedURLs.{ShortenedURL, StatsServer}
 
-  @db_pool_size Application.compile_env!(:shortener, Repo)[:pool_size]
-
   @doc """
   Creates a brand new Ecto.Changeset for ShortenedURL.
   """
@@ -65,7 +63,7 @@ defmodule Shortener.ShortenedURLs do
   def persist_page_views(page_views_by_slug) do
     page_views_by_slug
     |> Enum.group_by(fn {_slug, page_view} -> page_view end, fn {slug, _page_view} -> slug end)
-    |> Task.async_stream(&update_page_views(&1), max_concurrency: div(@db_pool_size, 2))
+    |> Task.async_stream(&update_page_views(&1), max_concurrency: max_concurrency())
     |> Stream.run()
   end
 
@@ -74,5 +72,10 @@ defmodule Shortener.ShortenedURLs do
       from(su in ShortenedURL, where: su.slug in ^slugs),
       inc: [page_views: page_views]
     )
+  end
+
+  defp max_concurrency do
+    db_pool_size = Application.get_env(:shortener, Repo)[:pool_size]
+    div(db_pool_size, 2)
   end
 end
