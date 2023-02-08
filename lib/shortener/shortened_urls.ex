@@ -42,6 +42,14 @@ defmodule Shortener.ShortenedURLs do
   end
 
   @doc """
+  Paginated lists ShortenedURLs.
+  """
+  @spec paginated_list(map()) :: Scrivener.Page.t()
+  def paginated_list(pagination) do
+    Repo.paginate(from(u in ShortenedURL, order_by: [desc: u.id]), pagination)
+  end
+
+  @doc """
   Calls the StatsServer to track a page view for the given slug.
   """
   @spec track_page_view(ShortenedURL.slug()) :: :ok

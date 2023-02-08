@@ -51,7 +51,7 @@ defmodule Shortener.ShortenedURLsTest do
     @tag slug_stub: "TESTSLUG"
     test "returns the shortened url" do
       url = "https://www.test.com"
-      fixture(:shortened_url, %{url: "https://www.test.com"})
+      fixture(:shortened_url, %{url: url})
 
       {:ok, shortened_url} = ShortenedURLs.find("TESTSLUG")
 
@@ -60,6 +60,20 @@ defmodule Shortener.ShortenedURLsTest do
 
     test "returns an error when shortened url is not found" do
       assert {:error, :not_found} == ShortenedURLs.find("not-found")
+    end
+  end
+
+  describe "paginated_list/1" do
+    @tag slug_stub: "TESTSLUG"
+    test "returns a paginated list of shortened urls" do
+      url = "https://www.test.com"
+      fixture(:shortened_url, %{url: url})
+
+      assert %Scrivener.Page{
+               entries: [%ShortenedURL{url: ^url}],
+               total_entries: 1,
+               total_pages: 1
+             } = ShortenedURLs.paginated_list(page: 1)
     end
   end
 

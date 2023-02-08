@@ -7,8 +7,9 @@
 
 body {
   background: var(--background);
-  height: 100vh;
   color: var(--textDark);
+  min-height: 100vh;
+  padding-bottom: 5rem;
 }
 
 .field:not(:last-child) {
@@ -16,7 +17,7 @@ body {
 }
 
 .two-columns-container {
-  margin-top: 10rem;
+  margin-top: 5rem;
   background: white;
   border-radius: 10px;
 }
@@ -66,4 +67,16 @@ input {
 input:focus {
   border-color: var(--brandColor) !important;
   box-shadow: 0 0 0 1px var(--brandColor) !important;
+}
+
+table th.shortened-url-column {
+  width: 300px;
+}
+
+table th.page-views-column {
+  width: 120px;
+}
+
+a.github-repo {
+  color: unset;
 }
