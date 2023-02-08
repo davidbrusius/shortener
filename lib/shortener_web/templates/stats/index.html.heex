@@ -1,0 +1,51 @@
+<%= if @shortened_urls == [] do %>
+  <article class="message is-warning">
+    <div class="message-body">
+      Ohh! Looks like you have not shortened any URLs yet. <br><br>
+      <%= link "Shorten now!", to: Routes.url_shortener_path(@conn, :index) %>
+    </div>
+  </article>
+<% else %>
+  <div class="is-flex is-justify-content-space-between">
+    <div class="tabs">
+      <ul>
+        <li class="is-active"><a>Analytics Stats</a></li>
+      </ul>
+    </div>
+    <div>
+      <%= link "Back to URL Shortener", to: Routes.url_shortener_path(@conn, :index), class: "button is-light is-align-self-flex-start" %>
+      <%= link "Download CSV", to: Routes.stats_path(@conn, :csv, page: @current_page), class: "button is-info is-light" %>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="table is-fullwidth">
+      <thead>
+        <tr>
+          <th class="shortened-url-column">Shortened URL</th>
+          <th>URL</th>
+          <th class="page-views-column">Page Views</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for shortened_url <- @shortened_urls do %>
+          <tr>
+            <% url = Routes.url_shortener_url(@conn, :show, shortened_url.slug) %>
+            <td><%= link url, to: url %></td>
+            <td class="full-url"><%= link shortened_url.url, to: shortened_url.url %></td>
+            <td><%= shortened_url.page_views %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <nav class="pagination is-rounded is-right" role="navigation" aria-label="pagination">
+    <ul class="pagination-list">
+      <%= for page <- 1..@total_pages do %>
+        <li>
+          <% class = if page == @current_page, do: "pagination-link is-current", else: "pagination-link" %>
+          <%= link page, to: Routes.stats_path(@conn, :index, page: page), class: class %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>
