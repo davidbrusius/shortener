@@ -27,4 +27,6 @@ config :logger, level: :warn
 config :phoenix, :plug_init_mode, :runtime
 
 # Config slug generator
-config :shortener, slug_generator: Shortener.ShortenedURLs.SlugGenerator.Mock
+config :shortener,
+  slug_generator: Shortener.ShortenedURLs.SlugGenerator.Mock,
+  stats_server_enabled: false

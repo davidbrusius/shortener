@@ -9,6 +9,7 @@ import Config
 
 config :shortener,
   ecto_repos: [Shortener.Repo],
+  stats_server_enabled: true,
   stats_server_persist_interval: :timer.seconds(30)
 
 # Configures the endpoint
